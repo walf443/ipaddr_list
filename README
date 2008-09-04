@@ -1,0 +1,32 @@
+
+= ipaddr_list
+
+seach ip address area faster than linear search IPAddr's Array.
+
+== Synopsis
+
+  require 'ipaddr_list'
+
+  list = IPAddrList.new(['192.168.2.3/24', '192.168.0.100/24'], :BinarySearch)
+  list.add('192.168.1.100/24')
+  list.include?('192.168.0.30') #=> true
+
+== Description
+
+== Installation
+
+=== Archive Installation
+
+	rake install
+
+=== Gem Installation
+
+	gem install ipaddr_list
+
+== Features/Problems
+
+== Copyright
+
+Author::    Keiji, Yoshimi <walf443 at gmail.com>
+Copyright:: Copyright (c) 2008 Keiji, Yoshimi
+License:: you can redistribute it and/or modify it under the same terms as Ruby itself.
