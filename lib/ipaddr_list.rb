@@ -40,7 +40,8 @@ end
 #
 #
 class IPAddrList
-  module Algorism
+  module Algorithm
+    # base interface for algorithm module. algorithm module should include this.
     module Lint
       def after_init ip_list=[]
         raise NotImprementedError
@@ -55,10 +56,45 @@ class IPAddrList
       def add ip
         raise NotImprementedError
       end
-
     end
 
-    # searching ipaddress with binary.
+    # slow and simple. It's for just benchmarking script.
+    module LinearSearch
+      include Lint
+
+      def after_init ip_list=[]
+        @ip_list = ip_list.map {|item|
+          if item.kind_of? IPAddr
+            item
+          else
+            IPAddr.new(item.to_s)
+          end
+        }
+      end
+
+      def add ip
+        unless ip.kind_of? IPAddr
+          ip = IPAddr.new(ip.to_s)
+        end
+        @ip_list.push ip
+      end
+
+      $LinearCount = 0
+      def each &block
+        @ip_list.each &block
+      end
+
+      def include? ip
+        if ip.kind_of? IPAddr
+          ipaddr = ip
+        else
+          ipaddr = IPAddr.new(ip)
+        end
+        @ip_list.any? {|item| item.include? ipaddr }
+      end
+    end
+
+    # searching ipaddress with binary search.
     module BinarySearch
       include Lint
 
@@ -74,7 +110,7 @@ class IPAddrList
 
       def add ip
         unless ip.kind_of? IPAddr
-          ip = IPAddr.new(ip)
+          ip = IPAddr.new(ip.to_s)
         end
         @ip_list.push(ip)
         @ip_list = @ip_list.sort
@@ -86,36 +122,47 @@ class IPAddrList
       end
 
       def include? ip
-        # binary search
-        # SEE ALSO: http://dsas.blog.klab.org/archives/51293334.html
-        remote = IPAddr.new(ip)
+        binary_search ip do |ipaddr, range|
+          range.any? {|idx| @ip_list[idx].include? ipaddr }
+        end
+      end
+
+      # binary search
+      # SEE ALSO: http://dsas.blog.klab.org/archives/51293334.html
+      def binary_search ip, &block
+        ipaddr = IPAddr.new(ip)
         min_idx = 0
         max_idx = @ip_list.size - 1
-        span = max_idx - min_idx
-        while ( ( span ) > 7 ) do
-          middle_idx = span / 2 + min_idx
-          middle_ip = @ip_list[ middle_idx ]
-          if remote >= middle_ip
-            min_idx = middle_idx
-          else
-            max_idx = middle_idx
-          end
-
+        if @ip_list[max_idx] > ipaddr
+          min_idx = max_idx
+        elsif @ip_list[min_idx] < ipaddr
+          max_idx = min_idx
+        else
           span = max_idx - min_idx
+          while ( ( span ) > 7 ) do
+            middle_idx = span / 2 + min_idx
+            middle_ip = @ip_list[ middle_idx ]
+            if ipaddr >= middle_ip
+              min_idx = middle_idx
+            else
+              max_idx = middle_idx
+            end
+
+            span = max_idx - min_idx
+          end
         end
 
-        # linear search for checking valid ip
-        ( min_idx .. max_idx ).any? {|idx| @ip_list[idx].include? remote }
+        block.call(ipaddr, min_idx..max_idx)
       end
     end
   end
 
-  def initialize ip_list, algorism=IPAddrList::Algorism::BinarySearch
-    unless algorism.kind_of? Module
-      algorism = IPAddrList::Algorism.const_get(algorism.to_s)
+  def initialize ip_list, algorithm=IPAddrList::Algorithm::BinarySearch
+    unless algorithm.kind_of? Module
+      algorithm = IPAddrList::Algorithm.const_get(algorithm.to_s)
     end
-    self.extend(algorism)
-    @algorism = algorism
+    self.extend(algorithm)
+    @algorithm = algorithm
     after_init ip_list
   end
 end
@@ -123,4 +170,6 @@ end
 if $0 == __FILE__
   ip_list = IPAddrList.new(['192.168.2.3/24', '192.168.0.100/24'], :BinarySearch)
   ip_list.add('192.168.1.10/24')
+  p ip_list.include?('192.168.1.1')
+  p ip_list.include?('192.168.0.100')
 end
