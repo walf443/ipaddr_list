@@ -1,4 +1,35 @@
-== 0.0.1 / 2008-09-05
+commit 0c9a5e72de5b4cb1739e93964448318be4facf8b
+Author: Keiji, Yoshimi <walf443@gmail.com>
+Date:   Sat Sep 13 06:52:05 2008 +0900
 
-* initial release
+    added documentation.
 
+commit 95f2be45d872dc2222982cd4953b88c733405842
+Author: Keiji, Yoshimi <walf443@gmail.com>
+Date:   Sat Sep 13 06:51:47 2008 +0900
+
+    added development_dependency.
+
+commit 92e40373def8978b74f87ef5ce80e215a445edb6
+Author: Keiji, Yoshimi <walf443@gmail.com>
+Date:   Sat Sep 13 06:34:19 2008 +0900
+
+    fixed warnings.
+
+commit 6b144d023d387993daa4ad7db3f2945c55a4a590
+Author: Keiji, Yoshimi <walf443@gmail.com>
+Date:   Fri Sep 5 09:17:58 2008 +0900
+
+    added algorithm Linear search.
+
+commit 9143d6eea71c652cb4bd6d9869f3c876aeebcfd0
+Author: Keiji, Yoshimi <walf443@gmail.com>
+Date:   Fri Sep 5 09:16:29 2008 +0900
+
+    added benchmark.
+
+commit 3474ddd98bbaa710a10d020c66fa0b0b3a040a47
+Author: Keiji, Yoshimi <walf443@gmail.com>
+Date:   Fri Sep 5 01:36:37 2008 +0900
+
+    initial import.
