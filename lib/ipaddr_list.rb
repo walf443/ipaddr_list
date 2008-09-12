@@ -43,16 +43,20 @@ class IPAddrList
   module Algorithm
     # base interface for algorithm module. algorithm module should include this.
     module Lint
+      # called automatically from IPAddrList#initialize.
+      # you should implement how save ip address list.
       def after_init ip_list=[]
         raise NotImprementedError
       end
 
+      # abstract method. your should implement adding iterating ip address list.
       def each &block
         raise NotImprementedError
       end
       
       include Enumerable
 
+      # abstract method. you should implement adding ip address to ip address list.
       def add ip
         raise NotImprementedError
       end
