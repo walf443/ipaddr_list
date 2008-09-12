@@ -134,12 +134,17 @@ class IPAddrList
       # binary search
       # SEE ALSO: http://dsas.blog.klab.org/archives/51293334.html
       def binary_search ip, &block
-        ipaddr = IPAddr.new(ip)
+        ipaddr = nil
+        if ip.kind_of? IPAddr
+          ipaddr = ip
+        else
+          ipaddr = IPAddr.new(ip)
+        end
         min_idx = 0
         max_idx = @ip_list.size - 1
-        if @ip_list[max_idx] > ipaddr
+        if @ip_list[max_idx] < ipaddr
           min_idx = max_idx
-        elsif @ip_list[min_idx] < ipaddr
+        elsif @ip_list[min_idx] > ipaddr
           max_idx = min_idx
         else
           span = max_idx - min_idx
