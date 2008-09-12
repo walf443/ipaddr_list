@@ -81,7 +81,7 @@ class IPAddrList
 
       $LinearCount = 0
       def each &block
-        @ip_list.each &block
+        @ip_list.each(&block)
       end
 
       def include? ip
